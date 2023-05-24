@@ -153,6 +153,7 @@ export interface OHRIFormQuestionOptions {
   answers?: Array<Record<any, any>>;
   weeksList?: string;
   locationTag?: string;
+  isPreLoadable?: boolean;
   rows?: number;
   toggleOptions?: { labelTrue: string; labelFalse: string };
   repeatOptions?: { addText?: string; limit?: string; limitExpression?: string };
@@ -190,6 +191,7 @@ export interface PostSubmissionAction {
     sessionMode: SessionMode;
   }): void;
 }
+
 // OpenMRS Type Definitions
 export interface OpenmrsEncounter {
   uuid?: string;
@@ -239,4 +241,35 @@ export interface OpenmrsForm {
 export interface OpenmrsFormResource extends OpenmrsResource {
   dataType: string;
   valueReference: string;
+}
+
+export interface EncounterProviderResponse {
+  results: Array<EncounterProvider>;
+}
+
+export interface EncounterProvider {
+  uuid: string;
+  display: string;
+  person: {
+    uuid: string;
+    display: string;
+  };
+  identifier: string;
+  attributes: [];
+  retired: false;
+}
+export interface DataSource<T> {
+  /**
+   * Fetches arbitrary data from a data source
+   */
+  fetchData(searchTerm?: string): Promise<Array<T>>;
+  /**
+   * Maps a data source item to an object with a uuid and display property
+   */
+  toUuidAndDisplay(item: T): UuidAndDisplay;
+}
+
+export interface UuidAndDisplay {
+  uuid: string;
+  display: string;
 }

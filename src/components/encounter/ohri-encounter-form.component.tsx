@@ -31,6 +31,9 @@ import { useInitialValues } from '../../hooks/useInitialValues';
 import { useEncounterRole } from '../../hooks/useEncounterRole';
 import { useConcepts } from '../../hooks/useConcepts';
 
+/**
+ * Todo pirupius - this needs to be refactored to pass the provider and location as props
+ */
 interface OHRIEncounterFormProps {
   formJson: OHRIFormSchema;
   patient: any;
@@ -171,6 +174,9 @@ export const OHRIEncounterForm: React.FC<OHRIEncounterFormProps> = ({
     };
   }, [scrollablePages, formJson]);
 
+  /**
+   * TODO pirupius - this needs to be refactored to pass the encounter location and provider
+   */
   useEffect(() => {
     if (!encounterLocation && location) {
       setEncounterLocation(location);
