@@ -25,6 +25,7 @@ export interface EncounterContext {
   sessionMode: SessionMode;
   encounterDate: Date;
   setEncounterDate(value: Date): void;
+  setEncounterProvider(value: any): void;
 }
 
 export const OHRIFormContext = React.createContext<OHRIFormContextProps | undefined>(undefined);

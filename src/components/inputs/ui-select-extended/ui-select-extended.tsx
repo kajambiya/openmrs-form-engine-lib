@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ComboBox, InlineLoading, DropdownSkeleton, NotificationButton } from '@carbon/react';
-import { Add } from '@carbon/react/icons';
-import { OHRIFormField, OHRIFormFieldProps } from '../../../api/types';
+import { ComboBox } from '@carbon/react';
+import { OHRIFormFieldProps } from '../../../api/types';
 import { useField } from 'formik';
 import styles from './ui-select-extended.scss';
 import { OHRIFormContext } from '../../../ohri-form-context';
@@ -12,7 +11,7 @@ import { getDataSource } from '../../../registry/registry';
 import { fieldRequiredErrCode, isEmpty } from '../../../validators/ohri-form-validator';
 import { PreviousValueReview } from '../../previous-value-review/previous-value-review.component';
 import debounce from 'lodash-es/debounce';
-import LoadingIcon from '../../loaders/loading.component';
+import InlineLoader from '../../loaders/inline-loader.component';
 
 export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handler, onChange }) => {
   const [field, meta] = useField(question.id);
@@ -41,25 +40,23 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
   };
 
   const debouncedSearch = debounce((searchterm, dataSource) => {
-    setIsLoading(true);
+    //setIsLoading(true); //Commented out to first fix loader CSS
     dataSource.fetchData(searchterm).then(dataItems => {
       setItems(dataItems.map(dataSource.toUuidAndDisplay));
-      //setIsLoading(false);
+      setIsLoading(false);
     });
   }, 300);
 
   useEffect(() => {
     // If not searchable, preload the items
     if (dataSource && !isTrue(question.questionOptions['isSearchable'])) {
-      setIsLoading(true);
-      console.log('Is loading..');
+      //setIsLoading(true);
       dataSource.fetchData().then(dataItems => {
         setItems(dataItems.map(dataSource.toUuidAndDisplay));
-        //setIsLoading(false);
+        setIsLoading(false);
       });
     }
   }, [dataSource]);
-  console.log(isLoading);
 
   useEffect(() => {
     // get the data source
@@ -109,8 +106,8 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
         <div
           className={
             isFieldRequiredError
-              ? `${styles.errorLabel} ${styles.formInputField} ${styles.multiselectOverride} ${styles.flexRow}`
-              : `${styles.formInputField} ${styles.multiselectOverride} ${styles.flexRow}`
+              ? `${styles.errorLabel} ${styles.multiselectOverride}`
+              : `${styles.multiselectOverride}`
           }>
           <ComboBox
             id={question.id}
@@ -138,12 +135,13 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
           />
         </div>
         {isLoading ? (
-          <div>
-            <InlineLoading description="Loading" status="active" iconDescription="Loading" />
+          <div className={styles.row}>
+            <InlineLoader />
           </div>
-        ) : null}
+        ) : // </div>
+        null}
         {previousValueForReview && (
-          <div>
+          <div className={styles.row}>
             <PreviousValueReview
               value={previousValueForReview.value}
               displayText={previousValueForReview.display}

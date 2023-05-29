@@ -24,6 +24,7 @@ import { EncounterDatetimeHandler } from '../submission-handlers/encounterDateti
 import { UISelectExtended } from '../components/inputs/ui-select-extended/ui-select-extended';
 import { EncounterProviderDataSource } from '../data-sources/encounter-provider-data-source';
 import { ConceptDataSource } from '../data-sources/concept-provider-data-source';
+import { EncounterProviderHandler } from '../submission-handlers/encounterProviderHandler';
 
 export interface RegistryItem {
   id: string;
@@ -182,6 +183,11 @@ const baseHandlers: Array<RegistryItem> = [
     id: 'EncounterDatetimeHandler',
     component: EncounterDatetimeHandler,
     type: 'encounterDatetime',
+  },
+  {
+    id: 'EncounterProviderHandler',
+    component: EncounterProviderHandler,
+    type: 'encounterProvider',
   },
 ];
 
