@@ -5,8 +5,12 @@ import { encounterRepresentation } from '../constants';
 import { OpenmrsForm } from './types';
 import { isUuid } from '../utils/boolean-utils';
 
+const BASE_WS_API_URL = '/ws/rest/v1/';
+
 export function saveEncounter(abortController: AbortController, payload, encounterUuid?: string) {
-  const url = !!encounterUuid ? `/ws/rest/v1/encounter/${encounterUuid}?v=full` : `/ws/rest/v1/encounter?v=full`;
+  const url = !!encounterUuid
+    ? `${BASE_WS_API_URL}encounter/${encounterUuid}?v=full`
+    : `${BASE_WS_API_URL}encounter?v=full`;
   return openmrsFetch(url, {
     headers: {
       'Content-Type': 'application/json',
@@ -18,24 +22,26 @@ export function saveEncounter(abortController: AbortController, payload, encount
 }
 
 export function getConcept(conceptUuid: string, v: string): Observable<any> {
-  return openmrsObservableFetch(`/ws/rest/v1/concept/${conceptUuid}?v=${v}`).pipe(map(response => response['data']));
+  return openmrsObservableFetch(`${BASE_WS_API_URL}concept/${conceptUuid}?v=${v}`).pipe(
+    map(response => response['data']),
+  );
 }
 
 export function getLocationsByTag(tag: string): Observable<{ uuid: string; display: string }[]> {
-  return openmrsObservableFetch(`/ws/rest/v1/location?tag=${tag}&v=custom:(uuid,display)`).pipe(
+  return openmrsObservableFetch(`${BASE_WS_API_URL}location?tag=${tag}&v=custom:(uuid,display)`).pipe(
     map(({ data }) => data['results']),
   );
 }
 
 export function getPreviousEncounter(patientUuid: string, encounterType) {
   const query = `encounterType=${encounterType}&patient=${patientUuid}`;
-  return openmrsFetch(`/ws/rest/v1/encounter?${query}&limit=1&v=${encounterRepresentation}`).then(({ data }) => {
+  return openmrsFetch(`${BASE_WS_API_URL}encounter?${query}&limit=1&v=${encounterRepresentation}`).then(({ data }) => {
     return data.results.length ? data.results[0] : null;
   });
 }
 
 export function fetchConceptNameByUuid(conceptUuid: string) {
-  return openmrsFetch(`/ws/rest/v1/concept/${conceptUuid}/name?limit=1`).then(({ data }) => {
+  return openmrsFetch(`${BASE_WS_API_URL}concept/${conceptUuid}/name?limit=1`).then(({ data }) => {
     if (data.results.length) {
       const concept = data.results[data.results.length - 1];
       return concept.display;
@@ -54,6 +60,18 @@ export function getLatestObs(patientUuid: string, conceptUuid: string, encounter
   });
 }
 
+export function getPatientIdentifier(patientUuid: string, IdentifierTypeUuid: string) {
+  return openmrsFetch(`${BASE_WS_API_URL}/patient/${patientUuid}/identifier`).then(({ data }) => {
+    if (data.results.length) {
+      const PatientArtNumbers = data.results.filter(id => id.identifierType.uuid === IdentifierTypeUuid);
+      if (PatientArtNumbers.length > 0) {
+        return PatientArtNumbers[0];
+      }
+    }
+    return null;
+  });
+}
+
 /**
  * Fetches an OpenMRS form using either its name or UUID.
  * @param {string} nameOrUUID - The form's name or UUID.
@@ -65,8 +83,8 @@ export async function fetchOpenMRSForm(nameOrUUID: string): Promise<OpenmrsForm 
   }
 
   const { url, isUUID } = isUuid(nameOrUUID)
-    ? { url: `/ws/rest/v1/form/${nameOrUUID}?v=full`, isUUID: true }
-    : { url: `/ws/rest/v1/form?q=${nameOrUUID}&v=full`, isUUID: false };
+    ? { url: `${BASE_WS_API_URL}form/${nameOrUUID}?v=full`, isUUID: true }
+    : { url: `${BASE_WS_API_URL}form?q=${nameOrUUID}&v=full`, isUUID: false };
 
   const { data: openmrsFormResponse } = await openmrsFetch(url);
   if (isUUID) {
@@ -92,7 +110,7 @@ export async function fetchClobData(form: OpenmrsForm): Promise<any | null> {
     return null;
   }
 
-  const clobDataUrl = `/ws/rest/v1/clobdata/${jsonSchemaResource.valueReference}`;
+  const clobDataUrl = `${BASE_WS_API_URL}clobdata/${jsonSchemaResource.valueReference}`;
   const { data: clobDataResponse } = await openmrsFetch(clobDataUrl);
 
   return clobDataResponse;
