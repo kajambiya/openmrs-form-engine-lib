@@ -40,7 +40,7 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
   };
 
   const debouncedSearch = debounce((searchterm, dataSource) => {
-    //setIsLoading(true); //Commented out to first fix loader CSS
+    setIsLoading(true);
     dataSource.fetchData(searchterm).then(dataItems => {
       setItems(dataItems.map(dataSource.toUuidAndDisplay));
       setIsLoading(false);
@@ -50,7 +50,7 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
   useEffect(() => {
     // If not searchable, preload the items
     if (dataSource && !isTrue(question.questionOptions['isSearchable'])) {
-      //setIsLoading(true);
+      setIsLoading(true);
       dataSource.fetchData().then(dataItems => {
         setItems(dataItems.map(dataSource.toUuidAndDisplay));
         setIsLoading(false);
@@ -135,19 +135,19 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
           />
         </div>
         {isLoading ? (
-          <div className={styles.row}>
+          <div>
             <InlineLoader />
           </div>
-        ) : // </div>
-        null}
-        {previousValueForReview && (
-          <div className={styles.row}>
-            <PreviousValueReview
-              value={previousValueForReview.value}
-              displayText={previousValueForReview.display}
-              setValue={handleChange}
-            />
-          </div>
+        ) : (
+          previousValueForReview && (
+            <div>
+              <PreviousValueReview
+                value={previousValueForReview.value}
+                displayText={previousValueForReview.display}
+                setValue={handleChange}
+              />
+            </div>
+          )
         )}
       </div>
     )

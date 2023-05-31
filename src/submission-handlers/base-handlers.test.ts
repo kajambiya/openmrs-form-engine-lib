@@ -17,6 +17,7 @@ const encounterContext: EncounterContext = {
   sessionMode: 'enter',
   encounterDate: new Date(2020, 11, 29),
   setEncounterDate: value => {},
+  setEncounterProvider: value => {},
 };
 
 describe('ObsSubmissionHandler - handleFieldSubmission', () => {

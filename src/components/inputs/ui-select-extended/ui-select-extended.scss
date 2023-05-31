@@ -27,6 +27,11 @@
     flex-wrap: wrap;
     width: 100%;
   }
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+  }
 
   .errorLabel label {
     color: colors.$red-60 !important;
