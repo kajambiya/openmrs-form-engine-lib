@@ -53,7 +53,7 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
       setIsLoading(true);
       dataSource.fetchData().then(dataItems => {
         setItems(dataItems.map(dataSource.toUuidAndDisplay));
-        setIsLoading(false);
+        //setIsLoading(false);
       });
     }
   }, [dataSource]);
@@ -135,9 +135,7 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
           />
         </div>
         {isLoading ? (
-          <div>
-            <InlineLoader />
-          </div>
+          <InlineLoader />
         ) : (
           previousValueForReview && (
             <div>
