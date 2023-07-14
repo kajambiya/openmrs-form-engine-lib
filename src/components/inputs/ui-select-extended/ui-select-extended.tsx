@@ -11,7 +11,6 @@ import { getDataSource } from '../../../registry/registry';
 import { fieldRequiredErrCode, isEmpty } from '../../../validators/ohri-form-validator';
 import { PreviousValueReview } from '../../previous-value-review/previous-value-review.component';
 import debounce from 'lodash-es/debounce';
-import InlineLoader from '../../loaders/inline-loader.component';
 import { useTranslation } from 'react-i18next';
 
 export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handler, onChange }) => {
@@ -129,7 +128,7 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
                 }
                 return item.display.toLowerCase().includes(inputValue.toLowerCase());
               }}
-              onChange={({ selectedItem }) => handleChange(selectedItem.uuid)}
+              onChange={({ selectedItem }) => handleChange(selectedItem?.uuid)}
               disabled={question.disabled}
               onInputChange={value => {
                 inputValue.current = value;
