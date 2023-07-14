@@ -25,6 +25,7 @@ import { UISelectExtended } from '../components/inputs/ui-select-extended/ui-sel
 import { EncounterProviderDataSource } from '../data-sources/encounter-provider-data-source';
 import { ConceptDataSource } from '../data-sources/concept-provider-data-source';
 import { EncounterProviderHandler } from '../submission-handlers/encounterProviderHandler';
+import { EncounterLocationDataSource } from '../data-sources/encounter-location-datasource';
 
 export interface RegistryItem {
   id: string;
@@ -214,6 +215,10 @@ const dataSources: Array<DataSourceRegistryItem> = [
   {
     id: 'concept-ds',
     component: new ConceptDataSource(),
+  },
+  {
+    id: 'encounteter-location',
+    component: new EncounterLocationDataSource(),
   },
 ];
 
