@@ -24,6 +24,7 @@ import { EncounterDatetimeHandler } from '../submission-handlers/encounterDateti
 import { UISelectExtended } from '../components/inputs/ui-select-extended/ui-select-extended';
 import { BaseOpenMRSDataSource } from '../datasources/data-source';
 import { LocationDataSource } from '../datasources/location-data-source';
+
 export interface RegistryItem {
   id: string;
   component: any;
@@ -57,6 +58,16 @@ export interface FormsRegistryStoreState {
   postSubmissionActions: Array<PostSubmissionActionRegistration>;
 }
 
+export const controlTemplatesFactory = [
+  {
+    name: 'drug',
+    baseControlComponent: UISelectExtended,
+    datasource: {
+      id: 'drug',
+      config: {},
+    }
+  }
+];
 export const baseFieldComponents: Array<CustomControlRegistration> = [
   {
     id: 'OHRIText',
@@ -159,6 +170,12 @@ export const baseFieldComponents: Array<CustomControlRegistration> = [
     type: 'datetime',
     alias: '',
   },
+  ...controlTemplatesFactory.map(template => ({
+    id: `${template.name}Control`,
+    loadControl: () => Promise.resolve({default: template.baseControlComponent}),
+    type: template.name.toLowerCase(),
+    alias: '',
+  }))
 ];
 
 const baseHandlers: Array<RegistryItem> = [
@@ -204,7 +221,16 @@ const dataSources: Array<DataSourceRegistryItem> = [
     id: 'concept_location',
     component: new LocationDataSource(),
   },
+  {
+    id: 'drug',
+    component: new BaseOpenMRSDataSource('/ws/rest/v1/drug?v=custom:(uuid,display)'),
+  },
 ];
+
+
+export const getControlTemplate = (name: string) => {
+  return controlTemplatesFactory.find(template => template.name === name);
+};
 
 export const getFieldComponent = renderType => {
   let lazy = baseFieldComponents.find(item => item.type == renderType || item?.alias == renderType)?.loadControl;

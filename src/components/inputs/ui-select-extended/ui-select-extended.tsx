@@ -12,6 +12,7 @@ import { fieldRequiredErrCode, isEmpty } from '../../../validators/ohri-form-val
 import { PreviousValueReview } from '../../previous-value-review/previous-value-review.component';
 import debounce from 'lodash-es/debounce';
 import { useTranslation } from 'react-i18next';
+import { useDataSource } from '../../../hooks/useDataSource';
 
 export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handler, onChange }) => {
   const { t } = useTranslation();
@@ -28,10 +29,7 @@ export const UISelectExtended: React.FC<OHRIFormFieldProps> = ({ question, handl
   const [inputValue, setInputValue] = useState('');
   const isProcessingSelection = useRef(false);
 
-  const [dataSource, config] = useMemo(
-    () => [getDataSource(question.questionOptions?.datasource?.id), question.questionOptions?.datasource?.config],
-    [],
-  );
+  const { dataSource, config } = useDataSource(question);
 
   useEffect(() => {
     if (question['submission']) {
